@@ -25,32 +25,41 @@ template<typename T>
 class Graph
 {
   private:
-    // Private Members
+  // Private Members
     Storage<T> graph;
-    // Public Members
+  // Public Members
   public:
-    // Constructors
-      Graph();
-    // Iterators
-    // Public Methods
+  // Constructors
+    Graph();
+    Graph(std::initializer_list<std::pair<T,T>> t);
+  // Iterators
+  // Public Methods
     template<typename U>
     void emplace(U&& u);
     template<typename U, typename... Args>
     void emplace(U&& u, Args&&... args);
     template<typename U>
     std::vector<T> get_adjacent(U&& u);
-    // Private Methods
-    // Operators
+  // Private Methods
+  // Operators
 };
 
 //
 // Constructors
 //
-
 template<typename T>
 Graph<T>::Graph()
   : graph( std::make_unique<Nodes<T>>() )
 {
+}
+
+template<typename T>
+Graph<T>::Graph(std::initializer_list<std::pair<T,T>> t)
+  : Graph()
+{
+  std::for_each(t.begin(), t.end(), [&](auto const& node){
+    this->emplace(node);
+  });
 }
 
 //

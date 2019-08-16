@@ -1,0 +1,50 @@
+// vim: set ts=2 sw=2 tw=0 et :
+//
+// @company     : Universidade Federal de Viçosa - Florestal
+// @author      : Ruan E. Formigoni (ruanformigoni@gmail.com)
+// @file        : tests
+// @created     : Thursday Aug 15, 2019 20:06:51 -03
+// @license     : MIT
+// @description : Taygete - C++ Generic Data-Structures Collection
+//
+
+#define CATCH_CONFIG_MAIN
+
+#include <array>
+#include <catch2/catch.hpp>
+#include <taygete/graph.hpp>
+
+template<typename T>
+void check_values(T&& t)
+{
+  int32_t index{0};
+  static std::array<int32_t,6> constexpr res{ 2, 3, 5, 6, 7, 8 };
+
+  for( auto i : { 1,2,3 } )
+  {
+    auto neighbors { t.get_adjacent(i) };
+
+    std::for_each(neighbors.cbegin(), neighbors.cend(), [&index](auto const& adjacent){
+      REQUIRE( adjacent ==  res.at(index++) );
+    });
+  }
+}
+
+TEST_CASE("Graph data structure", "[graph]")
+{
+  using namespace taygete::graph;
+
+  SECTION("Constructors")
+  {
+    using p = std::pair<int32_t,int32_t>;
+
+    p a{1,2}, b{1,3}, c{2,5}, d{2,6}, e{3,7}, f{3,8};
+    Graph<int32_t> graph1;
+    Graph<int32_t> graph2{ a, b, c, d, e, f };
+    Graph<int32_t> graph3{ p(1,2),p(1,3),p(2,5),p(2,6),p(3,7),p(3,8) };
+    Graph<int32_t> graph4{ {1,2},{1,3},{2,5},{2,6},{3,7},{3,8} };
+    check_values(graph2);
+    check_values(graph3);
+    check_values(graph4);
+  }
+}
