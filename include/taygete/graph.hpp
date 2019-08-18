@@ -14,7 +14,8 @@
 #include <memory>
 #include <functional>
 
-namespace taygete::graph {
+namespace taygete::graph
+{
 
 template<typename T>
 using Nodes = std::multimap<T,T>;

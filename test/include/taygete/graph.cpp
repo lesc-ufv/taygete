@@ -12,7 +12,8 @@
 #include <catch2/catch.hpp>
 #include <taygete/graph.hpp>
 
-namespace taygete::graph::test {
+namespace taygete::graph::test
+{
 
 template<typename T>
 void check_values(T&& t)
