@@ -27,6 +27,7 @@ class Graph
   private:
   // Private Members
     Storage<T> graph;
+    Storage<T> graph_rev;
   // Public Members
   public:
   // Constructors
@@ -50,6 +51,7 @@ class Graph
 template<typename T>
 Graph<T>::Graph()
   : graph( std::make_unique<Nodes<T>>() )
+  , graph_rev( std::make_unique<Nodes<T>>() )
 {
 }
 
@@ -69,6 +71,7 @@ template<typename T>
 template<typename U>
 void Graph<T>::emplace(U&& u)
 {
+  this->graph_rev->emplace(std::make_pair(u.second,u.first));
   this->graph->emplace(std::forward<U>(u));
 }
 
@@ -76,6 +79,7 @@ template<typename T>
 template<typename U, typename... Args>
 void Graph<T>::emplace(U&& u, Args&&... args)
 {
+  this->graph_rev->emplace(std::make_pair(u.second,u.first));
   this->graph->emplace(std::forward<U>(u));
   this->emplace(std::forward<Args>(args)...);
 }
@@ -84,11 +88,17 @@ template<typename T>
 template<typename U>
 std::vector<T> Graph<T>::get_adjacent(U&& u)
 {
-  auto range { this->graph->equal_range(u) };
+  auto range     { this->graph->equal_range(u)     };
+  auto range_rev { this->graph_rev->equal_range(u) };
+
   std::vector<T> v;
-  std::for_each(range.first, range.second, [&v](auto const& pair){
-      v.push_back(pair.second);
+  std::for_each(range.first, range.second, [&v](auto const& node){
+      v.push_back(node.second);
   });
+  std::for_each(range_rev.first, range_rev.second, [&v](auto const& node){
+      v.push_back(node.second);
+  });
+
   return v;
 }
 
