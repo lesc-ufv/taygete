@@ -64,9 +64,10 @@ TEST_CASE("Graph data structure", "[graph]")
       {10,12},{10,13},{11,13},
       {12,15},{13,16},{14,16},
       {15,17},{16,17},
+      {17,18}
     };
 
-    REQUIRE( chebyshev.get_node_count() == 18 );
+    REQUIRE( chebyshev.get_node_count() == 19 );
     REQUIRE( tree_like.get_node_count() == 7 );
   }
 }
