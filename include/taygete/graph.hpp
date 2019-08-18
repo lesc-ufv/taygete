@@ -36,12 +36,16 @@ class Graph
     Graph(std::initializer_list<std::pair<T,T>> t);
   // Iterators
   // Public Methods
+    // Element Access
+    template<typename U>
+    std::vector<T> get_adjacent(U&& u);
+    // Capacity
+    T get_node_count();
+    // Modifiers
     template<typename U>
     void emplace(U&& u);
     template<typename U, typename... Args>
     void emplace(U&& u, Args&&... args);
-    template<typename U>
-    std::vector<T> get_adjacent(U&& u);
   // Private Methods
   // Operators
 };
@@ -70,23 +74,6 @@ Graph<T>::Graph(std::initializer_list<std::pair<T,T>> t)
 //
 template<typename T>
 template<typename U>
-void Graph<T>::emplace(U&& u)
-{
-  this->graph_rev->emplace(std::make_pair(u.second,u.first));
-  this->graph->emplace(std::forward<U>(u));
-}
-
-template<typename T>
-template<typename U, typename... Args>
-void Graph<T>::emplace(U&& u, Args&&... args)
-{
-  this->graph_rev->emplace(std::make_pair(u.second,u.first));
-  this->graph->emplace(std::forward<U>(u));
-  this->emplace(std::forward<Args>(args)...);
-}
-
-template<typename T>
-template<typename U>
 std::vector<T> Graph<T>::get_adjacent(U&& u)
 {
   auto range     { this->graph->equal_range(u)     };
@@ -101,6 +88,30 @@ std::vector<T> Graph<T>::get_adjacent(U&& u)
   });
 
   return v;
+}
+
+template<typename T>
+T Graph<T>::get_node_count()
+{
+  return  (this->graph->rbegin()->first > this->graph_rev->rbegin()->first)?
+    this->graph->rbegin()->first+1 : this->graph_rev->rbegin()->first+1;
+}
+
+template<typename T>
+template<typename U>
+void Graph<T>::emplace(U&& u)
+{
+  this->graph_rev->emplace(std::make_pair(u.second,u.first));
+  this->graph->emplace(std::forward<U>(u));
+}
+
+template<typename T>
+template<typename U, typename... Args>
+void Graph<T>::emplace(U&& u, Args&&... args)
+{
+  this->graph_rev->emplace(std::make_pair(u.second,u.first));
+  this->graph->emplace(std::forward<U>(u));
+  this->emplace(std::forward<Args>(args)...);
 }
 
 } // namespace taygete::graph
