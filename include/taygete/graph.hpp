@@ -29,39 +29,35 @@ class Graph
   // Private Members
     Storage<T> graph;
     Storage<T> graph_rev;
-  // Public Members
   public:
   // Constructors
-    Graph();
-    Graph(std::initializer_list<std::pair<T,T>> t);
-  // Iterators
+    Graph() noexcept;
+    Graph(std::initializer_list<std::pair<T,T>> t) noexcept;
   // Public Methods
     // Element Access
     template<typename U>
-    std::vector<T> get_adjacent(U&& u);
+    std::vector<T> get_adjacent(U&& u) const noexcept;
     // Capacity
-    T get_node_count();
+    T get_node_count() const noexcept;
     // Modifiers
     template<typename U>
-    void emplace(U&& u);
+    void emplace(U&& u) noexcept;
     template<typename U, typename... Args>
-    void emplace(U&& u, Args&&... args);
-  // Private Methods
-  // Operators
+    void emplace(U&& u, Args&&... args) noexcept;
 };
 
 //
 // Constructors
 //
 template<typename T>
-Graph<T>::Graph()
+Graph<T>::Graph() noexcept
   : graph( std::make_unique<Nodes<T>>() )
   , graph_rev( std::make_unique<Nodes<T>>() )
 {
 }
 
 template<typename T>
-Graph<T>::Graph(std::initializer_list<std::pair<T,T>> t)
+Graph<T>::Graph(std::initializer_list<std::pair<T,T>> t) noexcept
   : Graph()
 {
   std::for_each(t.begin(), t.end(), [&](auto const& node){
@@ -74,7 +70,7 @@ Graph<T>::Graph(std::initializer_list<std::pair<T,T>> t)
 //
 template<typename T>
 template<typename U>
-std::vector<T> Graph<T>::get_adjacent(U&& u)
+std::vector<T> Graph<T>::get_adjacent(U&& u) const noexcept
 {
   auto range     { this->graph->equal_range(u)     };
   auto range_rev { this->graph_rev->equal_range(u) };
@@ -91,7 +87,7 @@ std::vector<T> Graph<T>::get_adjacent(U&& u)
 }
 
 template<typename T>
-T Graph<T>::get_node_count()
+T Graph<T>::get_node_count() const noexcept
 {
   return  (this->graph->rbegin()->first > this->graph_rev->rbegin()->first)?
     this->graph->rbegin()->first+1 : this->graph_rev->rbegin()->first+1;
@@ -99,7 +95,7 @@ T Graph<T>::get_node_count()
 
 template<typename T>
 template<typename U>
-void Graph<T>::emplace(U&& u)
+void Graph<T>::emplace(U&& u) noexcept
 {
   this->graph_rev->emplace(std::make_pair(u.second,u.first));
   this->graph->emplace(std::forward<U>(u));
@@ -107,7 +103,7 @@ void Graph<T>::emplace(U&& u)
 
 template<typename T>
 template<typename U, typename... Args>
-void Graph<T>::emplace(U&& u, Args&&... args)
+void Graph<T>::emplace(U&& u, Args&&... args) noexcept
 {
   this->graph_rev->emplace(std::make_pair(u.second,u.first));
   this->graph->emplace(std::forward<U>(u));
