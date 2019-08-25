@@ -11,6 +11,7 @@
 #include <array>
 #include <catch2/catch.hpp>
 #include <taygete/graph.hpp>
+#include <taygete/graph/example.hpp>
 
 namespace taygete::graph::test
 {
@@ -53,22 +54,13 @@ TEST_CASE("Graph data structure", "[graph]")
 
   SECTION("get_node_count method")
   {
-    Graph<int32_t> tree_like{ {0,1},{0,2},{1,3},{1,4},{2,5},{2,6} };
-
-    Graph<int32_t> chebyshev
-    {
-      {0,2},{0,3},{1,3},
-      {2,4},{2,5},{3,5},
-      {4,7},{4,8},{5,9},{6,9},
-      {7,10},{8,11},{9,11},
-      {10,12},{10,13},{11,13},
-      {12,15},{13,16},{14,16},
-      {15,17},{16,17},
-      {17,18}
-    };
-
-    REQUIRE( chebyshev.get_node_count() == 19 );
-    REQUIRE( tree_like.get_node_count() == 7 );
+    REQUIRE( example::mux_2_1.get_node_count() == 7 );
+    REQUIRE( example::gate_xor.get_node_count() == 7 );
+    REQUIRE( example::gate_xnor.get_node_count() == 8 );
+    REQUIRE( example::adder_full_1_bit.get_node_count() == 12 );
+    REQUIRE( example::parity_generator.get_node_count() == 13 );
+    REQUIRE( example::parity_checker.get_node_count() == 19 );
+    REQUIRE( example::chebyshev.get_node_count() == 19 );
   }
 }
 
