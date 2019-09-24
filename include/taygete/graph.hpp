@@ -37,6 +37,7 @@ class Graph
     // Element Access
     template<typename U>
     std::vector<T> get_adjacent(U&& u) const noexcept;
+    Nodes<T> data() const noexcept;
     // Capacity
     T get_node_count() const noexcept;
     // Modifiers
@@ -84,6 +85,12 @@ std::vector<T> Graph<T>::get_adjacent(U&& u) const noexcept
   });
 
   return v;
+}
+
+template<typename T>
+Nodes<T> Graph<T>::data() const noexcept
+{
+  return *(this->graph);
 }
 
 template<typename T>
