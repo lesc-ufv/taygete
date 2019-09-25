@@ -62,6 +62,27 @@ TEST_CASE("Graph data structure", "[graph]")
     REQUIRE( example::parity_checker.get_node_count() == 19 );
     REQUIRE( example::chebyshev.get_node_count() == 19 );
   }
+
+  SECTION("exists_edge method")
+  {
+    REQUIRE( example::mux_2_1.exists_edge(0,4) );
+    REQUIRE( example::mux_2_1.exists_edge(0,3) );
+    REQUIRE( example::mux_2_1.exists_edge(1,5) );
+    REQUIRE( example::mux_2_1.exists_edge(2,4) );
+    REQUIRE( example::mux_2_1.exists_edge(3,5) );
+    REQUIRE( example::mux_2_1.exists_edge(4,6) );
+    REQUIRE( example::mux_2_1.exists_edge(5,6) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(0,1) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(0,2) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(0,5) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(0,6) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(1,2) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(1,3) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(4,5) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(4,7) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(5,5) );
+    REQUIRE_FALSE( example::mux_2_1.exists_edge(5,7) );
+  }
 }
 
 } // namespace taygete::graph::test

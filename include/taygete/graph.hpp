@@ -37,6 +37,8 @@ class Graph
     // Element Access
     template<typename U>
     std::vector<T> get_adjacent(U&& u) const noexcept;
+    template<typename U>
+    bool exists_edge(U&& u1, U&& u2) const noexcept;
     Nodes<T> data() const noexcept;
     // Capacity
     T get_node_count() const noexcept;
@@ -73,18 +75,37 @@ template<typename T>
 template<typename U>
 std::vector<T> Graph<T>::get_adjacent(U&& u) const noexcept
 {
-  auto range     { this->graph->equal_range(u)     };
+  auto range { this->graph->equal_range(u) };
   auto range_rev { this->graph_rev->equal_range(u) };
 
   std::vector<T> v;
+
   std::for_each(range.first, range.second, [&v](auto const& node){
       v.push_back(node.second);
   });
+
   std::for_each(range_rev.first, range_rev.second, [&v](auto const& node){
       v.push_back(node.second);
   });
 
   return v;
+}
+
+template<typename T>
+template<typename U>
+bool Graph<T>::exists_edge(U&& u1, U&& u2) const noexcept
+{
+  auto range { this->graph->equal_range(u1) };
+
+  auto search {std::find_if(range.first, range.second,
+      [&u2](auto&& e)
+      {
+        return e.second == u2;
+      }
+    )
+  };
+
+  return search != range.second;
 }
 
 template<typename T>
