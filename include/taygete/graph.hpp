@@ -49,6 +49,8 @@ class Graph
     void emplace(U&& u) noexcept;
     template<typename U, typename... Args>
     void emplace(U&& u, Args&&... args) noexcept;
+    template<typename U = std::pair<T,T>>
+    void erase_edge(U&& u);
 };
 
 //
@@ -153,6 +155,48 @@ void Graph<T>::emplace(U&& u, Args&&... args) noexcept
   this->graph_rev->emplace(std::make_pair(u.second,u.first));
   this->graph->emplace(std::forward<U>(u));
   this->emplace(std::forward<Args>(args)...);
+}
+
+template<typename T>
+template<typename U>
+void Graph<T>::erase_edge(U&& u)
+{
+  auto rng_g {this->graph->equal_range(u.first)};
+  auto search_g =
+    std::find_if(rng_g.first,rng_g.second,
+      [&u](auto&& v)
+      {
+        return u.second == v.second;
+      }
+    );
+
+  auto rng_r {this->graph_rev->equal_range(u.second)};
+  auto search_r =
+    std::find_if(rng_r.first,rng_r.second,
+      [&u](auto&& v)
+      {
+        return u.first == v.second;
+      }
+    );
+
+  if( search_g != rng_g.second && search_r != rng_r.second)
+  {
+    this->graph->erase(search_g);
+    this->graph_rev->erase(search_r);
+  }
+
+  auto data {*this->graph};
+  for( auto [x,y] : data )
+  {
+    std::cout << "→ " << x << "," << y << std::endl;
+  }
+
+  data = *this->graph_rev;
+  for( auto [x,y] : data )
+  {
+    std::cout << "Rev → " << x << "," << y << std::endl;
+  }
+
 }
 
 } // namespace taygete::graph

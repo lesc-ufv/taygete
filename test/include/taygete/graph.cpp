@@ -87,6 +87,35 @@ TEST_CASE("Graph data structure", "[graph]")
     REQUIRE_FALSE( example::mux_2_1.exists_edge(5,5) );
     REQUIRE_FALSE( example::mux_2_1.exists_edge(5,7) );
   }
+
+  SECTION("emplace method")
+  {
+    using Node = std::pair<int32_t,int32_t>;
+    using Graph = Graph<int32_t>;
+
+    Graph graph;
+    Node n1(1,3);
+    Node n2(2,4);
+    Node n3(2,3);
+
+    graph.emplace(std::make_pair(1,2));
+    graph.emplace(n1);
+    graph.emplace(n3);
+  }
+
+  SECTION("erase method")
+  {
+    Graph<int32_t> graph{ {0,1},{0,2},{1,3},{1,4},{2,5},{2,6} };
+
+    graph.erase_edge({2,6});
+    REQUIRE(graph.get_node_count() == 6);
+
+    graph.erase_edge({2,5});
+    REQUIRE(graph.get_node_count() == 5);
+
+    graph.erase_edge({0,2});
+    REQUIRE(graph.get_node_count() == 4);
+  }
 }
 
 } // namespace taygete::graph::test
