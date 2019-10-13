@@ -13,6 +13,7 @@
 #include <map>
 #include <memory>
 #include <functional>
+#include <set>
 
 namespace taygete::graph
 {
@@ -43,7 +44,7 @@ class Graph
     bool exists_edge(U&& u1, U&& u2) const noexcept;
     Nodes<T> data() const noexcept;
     // Capacity
-    T get_node_count() const noexcept;
+    std::size_t get_node_count() const noexcept;
     // Modifiers
     template<typename U>
     void emplace(U&& u) noexcept;
@@ -134,10 +135,17 @@ Nodes<T> Graph<T>::data() const noexcept
 }
 
 template<typename T>
-T Graph<T>::get_node_count() const noexcept
+std::size_t Graph<T>::get_node_count() const noexcept
 {
-  return  (this->graph->rbegin()->first > this->graph_rev->rbegin()->first)?
-    this->graph->rbegin()->first+1 : this->graph_rev->rbegin()->first+1;
+  std::set<T> uniques;
+
+  for(auto it{this->graph->begin()}; it!=this->graph->end(); ++it)
+  {
+    uniques.insert(it->first);
+    uniques.insert(it->second);
+  }
+
+  return uniques.size();
 }
 
 template<typename T>
@@ -184,19 +192,6 @@ void Graph<T>::erase_edge(U&& u)
     this->graph->erase(search_g);
     this->graph_rev->erase(search_r);
   }
-
-  auto data {*this->graph};
-  for( auto [x,y] : data )
-  {
-    std::cout << "→ " << x << "," << y << std::endl;
-  }
-
-  data = *this->graph_rev;
-  for( auto [x,y] : data )
-  {
-    std::cout << "Rev → " << x << "," << y << std::endl;
-  }
-
 }
 
 } // namespace taygete::graph
