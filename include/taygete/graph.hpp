@@ -32,6 +32,8 @@ class Graph
   public:
   // Constructors
     Graph() noexcept;
+    Graph(Graph const& src) noexcept;
+    Graph(Graph&& src) noexcept;
     Graph(std::initializer_list<std::pair<T,T>> t) noexcept;
   // Public Methods
     // Element Access
@@ -57,6 +59,21 @@ Graph<T>::Graph() noexcept
   : graph( std::make_unique<Nodes<T>>() )
   , graph_rev( std::make_unique<Nodes<T>>() )
 {
+}
+
+template<typename T>
+Graph<T>::Graph(Graph const& src) noexcept
+{
+  this->graph = std::make_unique<Nodes<T>>();
+  *this->graph = *src.graph;
+  this->graph_rev = std::make_unique<Nodes<T>>();
+  *this->graph_rev = *src.graph_rev;
+}
+template<typename T>
+Graph<T>::Graph(Graph&& src) noexcept
+{
+  this->graph = std::move(src.graph);
+  this->graph_rev = std::move(src.graph_rev);
 }
 
 template<typename T>

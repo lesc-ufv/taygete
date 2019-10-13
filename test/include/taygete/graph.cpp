@@ -50,6 +50,10 @@ TEST_CASE("Graph data structure", "[graph]")
     check_values(graph2);
     check_values(graph3);
     check_values(graph4);
+
+    // Copy and Move constructors
+    Graph<int32_t> graph5{graph1};            // Copy
+    Graph<int32_t> graph6{std::move(graph2)}; // Move
   }
 
   SECTION("get_node_count method")
