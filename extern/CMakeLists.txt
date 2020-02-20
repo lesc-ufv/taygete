@@ -26,7 +26,14 @@ FetchContent_Declare(
   GIT_TAG v2.9.1
 )
 
+FetchContent_Declare(
+  lorina
+  GIT_REPOSITORY git@github.com:hriener/lorina.git
+)
+
 # Populate Libraries
+Fetch("lorina")
+
 if(${PROJECT_NAME}_tests)
   Fetch("catch")
 endif()

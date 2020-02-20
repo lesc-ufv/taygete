@@ -10,4 +10,5 @@
 
 add_library(taygete INTERFACE)
 target_include_directories(taygete INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_features(taygete INTERFACE cxx_std_17)
+target_compile_features(taygete INTERFACE cxx_std_20)
+target_link_libraries(taygete INTERFACE lorina)

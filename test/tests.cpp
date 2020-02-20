@@ -11,3 +11,4 @@
 #define CATCH_CONFIG_MAIN
 
 #include "include/taygete/graph.cpp"
+#include "include/taygete/graph-reader.cpp"

@@ -10,5 +10,6 @@
 
 if( ${PROJECT_NAME}_tests )
   add_executable(${PROJECT_NAME}_tests tests.cpp)
+  target_compile_features(${PROJECT_NAME}_tests PRIVATE cxx_std_20)
   target_link_libraries(${PROJECT_NAME}_tests taygete Catch2)
 endif()
