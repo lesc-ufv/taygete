@@ -11,7 +11,8 @@
 #include <map>
 #include <iostream> // TODO remove
 
-namespace taygete::graph::graph_reader {
+namespace taygete::graph::graph_reader
+{
 
 
 template<typename F1>
@@ -24,7 +25,7 @@ class graph_reader : private lorina::verilog_reader
   public:
   // Constructors
     template<typename T>
-    graph_reader(T&& filename, F1 callback);
+    graph_reader(T&& input, F1 callback);
   private:
   // Private Methods
     // Modifiers
@@ -62,20 +63,16 @@ class graph_reader : private lorina::verilog_reader
 //
 template<typename F1>
 template<typename T>
-graph_reader<F1>::graph_reader(T&& filename, F1 callback)
+graph_reader<F1>::graph_reader(T&& input, F1 callback)
   : callback(callback)
   , base(0)
 {
 
-  auto const op {lorina::read_verilog(filename, *this)};
+  auto const op {lorina::read_verilog(input, *this)};
 
-  if( op == lorina::return_code::success )
+  if( !(op == lorina::return_code::success) )
   {
-    std::cout << "Success!" << std::endl;
-  }
-  else
-  {
-    std::cout << "!Success" << std::endl;
+    std::cout << "\033[91;1m * \033[mParsing error!" << std::endl;
   }
 }
 
