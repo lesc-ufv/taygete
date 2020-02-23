@@ -1,8 +1,8 @@
-/**
- * @author      : Ruan E. Formigoni (ruanformigoni@gmail.com)
- * @file        : graph-reader
- * @created     : Thursday Jan 16, 2020 06:26:53 -03
- */
+//
+// @author      : Ruan E. Formigoni (ruanformigoni@gmail.com)
+// @file        : graph-reader
+// @created     : Thursday Jan 16, 2020 06:26:53 -03
+//
 
 #pragma once
 
@@ -11,12 +11,12 @@
 #include <map>
 #include <iostream> // TODO remove
 
-namespace taygete::graph::graph_reader
+namespace taygete::graph::reader
 {
 
 
 template<typename F1>
-class graph_reader : private lorina::verilog_reader
+class Reader : private lorina::verilog_reader
 {
   private:
     mutable F1 callback;
@@ -25,7 +25,7 @@ class graph_reader : private lorina::verilog_reader
   public:
   // Constructors
     template<typename T>
-    graph_reader(T&& input, F1 callback);
+    Reader(T&& input, F1 callback);
   private:
   // Private Methods
     // Modifiers
@@ -63,7 +63,7 @@ class graph_reader : private lorina::verilog_reader
 //
 template<typename F1>
 template<typename T>
-graph_reader<F1>::graph_reader(T&& input, F1 callback)
+Reader<F1>::Reader(T&& input, F1 callback)
   : callback(callback)
   , base(0)
 {
@@ -80,21 +80,21 @@ graph_reader<F1>::graph_reader(T&& input, F1 callback)
 // Modifiers
 //
 template<typename F1>
-void graph_reader<F1>::on_module_header( const std::string& module_name,
+void Reader<F1>::on_module_header( const std::string& module_name,
     const std::vector<std::string>& inouts ) const noexcept
 {
   std::cout << "Module: " << module_name << std::endl;
 }
 
 template<typename F1>
-void graph_reader<F1>::on_assign( const std::string& lhs,
+void Reader<F1>::on_assign( const std::string& lhs,
     const std::pair<std::string, bool>& rhs ) const noexcept
 {
   this->update(lhs, rhs);
 }
 
 template<typename F1>
-void graph_reader<F1>::on_and( const std::string& lhs,
+void Reader<F1>::on_and( const std::string& lhs,
   const std::pair<std::string, bool>& op1,
   const std::pair<std::string, bool>& op2 ) const noexcept
 {
@@ -102,7 +102,7 @@ void graph_reader<F1>::on_and( const std::string& lhs,
 }
 
 template<typename F1>
-void graph_reader<F1>::on_nand( const std::string& lhs,
+void Reader<F1>::on_nand( const std::string& lhs,
   const std::pair<std::string, bool>& op1,
   const std::pair<std::string, bool>& op2 ) const noexcept
 {
@@ -110,7 +110,7 @@ void graph_reader<F1>::on_nand( const std::string& lhs,
 }
 
 template<typename F1>
-void graph_reader<F1>::on_or( const std::string& lhs,
+void Reader<F1>::on_or( const std::string& lhs,
   const std::pair<std::string, bool>& op1,
   const std::pair<std::string, bool>& op2 ) const noexcept
 {
@@ -118,7 +118,7 @@ void graph_reader<F1>::on_or( const std::string& lhs,
 }
 
 template<typename F1>
-void graph_reader<F1>::on_nor( const std::string& lhs,
+void Reader<F1>::on_nor( const std::string& lhs,
   const std::pair<std::string, bool>& op1,
   const std::pair<std::string, bool>& op2 ) const noexcept
 {
@@ -126,7 +126,7 @@ void graph_reader<F1>::on_nor( const std::string& lhs,
 }
 
 template<typename F1>
-void graph_reader<F1>::on_xor( const std::string& lhs,
+void Reader<F1>::on_xor( const std::string& lhs,
   const std::pair<std::string, bool>& op1,
   const std::pair<std::string, bool>& op2 ) const noexcept
 {
@@ -134,7 +134,7 @@ void graph_reader<F1>::on_xor( const std::string& lhs,
 }
 
 template<typename F1>
-void graph_reader<F1>::on_xnor( const std::string& lhs,
+void Reader<F1>::on_xnor( const std::string& lhs,
   const std::pair<std::string, bool>& op1,
   const std::pair<std::string, bool>& op2 ) const noexcept
 {
@@ -142,7 +142,7 @@ void graph_reader<F1>::on_xnor( const std::string& lhs,
 }
 
 template<typename F1>
-void graph_reader<F1>::update( const std::string& lhs,
+void Reader<F1>::update( const std::string& lhs,
   const std::pair<std::string, bool>& op1,
   const std::pair<std::string, bool>& op2 ) const noexcept
 {
@@ -154,7 +154,7 @@ void graph_reader<F1>::update( const std::string& lhs,
 }
 
 template<typename F1>
-void graph_reader<F1>::update( const std::string& lhs,
+void Reader<F1>::update( const std::string& lhs,
   const std::pair<std::string, bool>& rhs ) const noexcept
 {
   if( ! this->ids.contains(lhs) ) this->ids[lhs] = this->base++;
@@ -162,4 +162,4 @@ void graph_reader<F1>::update( const std::string& lhs,
   this->callback(this->ids[rhs.first], this->ids[lhs]);
 }
 
-} // namespace taygete::graph::graph_reader
+} // namespace taygete::graph::reader

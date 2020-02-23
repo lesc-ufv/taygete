@@ -1,8 +1,8 @@
-/**
- * @author      : Ruan E. Formigoni (ruanformigoni@gmail.com)
- * @file        : graph-reader
- * @created     : Thursday Jan 16, 2020 06:38:38 -03
- */
+//
+// @author      : Ruan E. Formigoni (ruanformigoni@gmail.com)
+// @file        : graph-reader
+// @created     : Thursday Jan 16, 2020 06:38:38 -03
+//
 
 #include <taygete/graph-reader.hpp>
 #include <taygete/graph.hpp>
@@ -40,8 +40,7 @@ SECTION("Parser")
 
   // Pass the stream to the graph_reader
   // and subsequently lorina
-  graph::graph_reader::graph_reader<decltype(callback)>
-    reader(ss, callback);
+  graph::reader::Reader reader(ss, callback);
 
   // Print graph
   auto data {g.data()};
