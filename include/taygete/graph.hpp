@@ -39,6 +39,10 @@ class Graph
   // Public Methods
     // Element Access
     template<typename U>
+    std::vector<T> get_predecessors(U&& u) const noexcept;
+    template<typename U>
+    std::vector<T> get_successors(U&& u) const noexcept;
+    template<typename U>
     std::vector<T> get_adjacent(U&& u) const noexcept;
     template<typename U>
     bool exists_edge(U&& u1, U&& u2) const noexcept;
@@ -91,6 +95,37 @@ Graph<T>::Graph(std::initializer_list<std::pair<T,T>> t) noexcept
 //
 // Public Methods
 //
+
+template<typename T>
+template<typename U>
+std::vector<T> Graph<T>::get_predecessors(U&& u) const noexcept
+{
+  auto range_rev { this->graph_rev->equal_range(u) };
+
+  std::vector<T> v;
+
+  std::for_each(range_rev.first, range_rev.second, [&v](auto const& node){
+      v.push_back(node.second);
+  });
+
+  return v;
+}
+
+template<typename T>
+template<typename U>
+std::vector<T> Graph<T>::get_successors(U&& u) const noexcept
+{
+  auto range { this->graph->equal_range(u) };
+
+  std::vector<T> v;
+
+  std::for_each(range.first, range.second, [&v](auto const& node){
+      v.push_back(node.second);
+  });
+
+  return v;
+}
+
 template<typename T>
 template<typename U>
 std::vector<T> Graph<T>::get_adjacent(U&& u) const noexcept
