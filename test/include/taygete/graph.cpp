@@ -56,6 +56,50 @@ TEST_CASE("Graph data structure", "[graph]")
     Graph<int32_t> graph6{std::move(graph2)}; // Move
   }
 
+  SECTION("get_predecessors method")
+  {
+    auto& checker {example::parity_checker};
+
+    auto pred{ checker.get_predecessors(0) };
+    REQUIRE( pred.empty() );
+    pred = checker.get_predecessors(1);
+    REQUIRE( pred.empty() );
+    pred = checker.get_predecessors(2);
+    REQUIRE( pred.empty() );
+    pred = checker.get_predecessors(3);
+    REQUIRE( pred.empty() );
+    pred = checker.get_predecessors(4);
+    REQUIRE( pred.size() == 1 );
+    pred = checker.get_predecessors(5);
+    REQUIRE( pred.size() == 1 );
+    pred = checker.get_predecessors(6);
+    REQUIRE( pred.size() == 1 );
+    pred = checker.get_predecessors(7);
+    REQUIRE( pred.size() == 1 );
+    pred = checker.get_predecessors(8);
+    REQUIRE( pred.size() == 2 );
+    pred = checker.get_predecessors(9);
+    REQUIRE( pred.size() == 2 );
+    pred = checker.get_predecessors(10);
+    REQUIRE( pred.size() == 2 );
+    pred = checker.get_predecessors(11);
+    REQUIRE( pred.size() == 2 );
+    pred = checker.get_predecessors(12);
+    REQUIRE( pred.size() == 2 );
+    pred = checker.get_predecessors(13);
+    REQUIRE( pred.size() == 2 );
+    pred = checker.get_predecessors(14);
+    REQUIRE( pred.size() == 1 );
+    pred = checker.get_predecessors(15);
+    REQUIRE( pred.size() == 1 );
+    pred = checker.get_predecessors(16);
+    REQUIRE( pred.size() == 2 );
+    pred = checker.get_predecessors(17);
+    REQUIRE( pred.size() == 2 );
+    pred = checker.get_predecessors(18);
+    REQUIRE( pred.size() == 2 );
+  }
+
   SECTION("get_node_count method")
   {
     REQUIRE( example::mux_2_1.get_node_count() == 7 );

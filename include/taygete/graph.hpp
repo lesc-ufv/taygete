@@ -46,7 +46,7 @@ class Graph
     std::vector<T> get_adjacent(U&& u) const noexcept;
     template<typename U>
     bool exists_edge(U&& u1, U&& u2) const noexcept;
-    Nodes<T> data() const noexcept;
+    Nodes<T>& data() noexcept;
     // Capacity
     std::size_t get_node_count() const noexcept;
     // Modifiers
@@ -164,7 +164,7 @@ bool Graph<T>::exists_edge(U&& u1, U&& u2) const noexcept
 }
 
 template<typename T>
-Nodes<T> Graph<T>::data() const noexcept
+Nodes<T>& Graph<T>::data() noexcept
 {
   return *(this->graph);
 }
