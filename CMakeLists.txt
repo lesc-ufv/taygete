@@ -12,25 +12,70 @@ cmake_minimum_required(VERSION 3.1..3.15)
 
 project(
   taygete
-  DESCRIPTION "Taygete - C++ Generic Data-Structures Collection"
+  DESCRIPTION "Taygete - C++ Generic Data-Structures"
   LANGUAGES CXX
   )
 
-# CMake Modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(colors)
-define_colors()
+# Conan
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
 
 # External Libraries
-add_subdirectory(extern)
+find_package(lorina)
 
 # Source Files
 add_subdirectory(include)
 
 # Tests
-option(${PROJECT_NAME}_tests "Enable Testing Modules" OFF)
+add_subdirectory(test)
 
-if( ${PROJECT_NAME}_tests )
-  message(STATUS "${C_BLUE} * ${C_RESET}${PROJECT_NAME} testing enabled")
-  add_subdirectory(test)
-endif()
+# Install
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+# Export targets
+install(
+  TARGETS taygete
+  EXPORT taygete-targets
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+# Install exported targets
+install(EXPORT taygete-targets
+  FILE taygete-targets.cmake
+  NAMESPACE taygete::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/taygete
+)
+
+# Create config file
+configure_package_config_file(
+  cmake/taygete-config.cmake.in
+  taygete-config.cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/taygete
+  NO_SET_AND_CHECK_MACRO
+  NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+# Install config file
+install(
+  FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/taygete-config.cmake
+  DESTINATION
+    ${CMAKE_INSTALL_LIBDIR}/cmake/taygete
+)
+
+# Install headers
+install(
+  DIRECTORY
+    ${PROJECT_SOURCE_DIR}/include/taygete
+  DESTINATION
+    ${CMAKE_INSTALL_PREFIX}/include
+)
+
+# Packaging
+set(CPACK_PACKAGE_NAME                taygete)
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Taygete - C++ Generic Data-Structures")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY   ${CPACK_PACKAGE_NAME})
+set(CPACK_GENERATOR                   "DEB"  )
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER   "Ruan")
+include(CPack)
