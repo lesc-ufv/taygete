@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include <algorithm>
+#include <vector>
 #include <map>
 #include <memory>
 #include <functional>
