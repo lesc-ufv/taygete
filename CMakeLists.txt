@@ -21,7 +21,9 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # External Libraries
-find_package(lorina)
+if(NOT lorina_FOUND)
+  find_package(lorina)
+endif()
 
 # Source Files
 add_subdirectory(include)
