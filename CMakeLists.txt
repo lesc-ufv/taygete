@@ -21,6 +21,10 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # External Libraries
+if(NOT range-v3_FOUND)
+  find_package(range-v3 REQUIRED)
+endif()
+
 if(NOT lorina_FOUND)
   find_package(lorina)
 endif()
