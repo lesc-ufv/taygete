@@ -77,4 +77,4 @@ Naming conventions are derived from the book:
   	A---A;
   ```
 
-* A directed edge has a $`tail$` and a $`head$`, the $`head$` is the arrowhead.
+* A directed edge has a $`tail`$ and a $`head`$, the $`head`$ is the arrowhead.
