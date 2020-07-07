@@ -9,7 +9,7 @@
 #include <lorina/lorina.hpp>
 #include <optional>
 #include <map>
-#include <iostream> // TODO remove
+#include <sstream>
 
 namespace taygete::graph::reader
 {
@@ -68,11 +68,13 @@ Reader<F1>::Reader(T&& input, F1 callback)
   , base(0)
 {
 
-  auto const op {lorina::read_verilog(input, *this)};
+  std::stringstream lorina_input; lorina_input << input;
+
+  auto const op {lorina::read_verilog(lorina_input, *this)};
 
   if( !(op == lorina::return_code::success) )
   {
-    std::cout << "\033[91;1m * \033[mParsing error!" << std::endl;
+    std::cerr << "\033[91;1m * \033[mParsing error!" << std::endl;
   }
 }
 
@@ -83,7 +85,6 @@ template<typename F1>
 void Reader<F1>::on_module_header( const std::string& module_name,
     const std::vector<std::string>& inouts ) const noexcept
 {
-  std::cout << "Module: " << module_name << std::endl;
 }
 
 template<typename F1>
@@ -149,8 +150,8 @@ void Reader<F1>::update( const std::string& lhs,
   if( ! this->ids.contains(op1.first) ) this->ids[op1.first] = this->base++;
   if( ! this->ids.contains(op2.first) ) this->ids[op2.first] = this->base++;
   if( ! this->ids.contains(lhs) ) this->ids[lhs] = this->base++;
-  this->callback(this->ids[op1.first], this->ids[lhs]);
-  this->callback(this->ids[op2.first], this->ids[lhs]);
+  this->callback(std::make_pair(this->ids[op1.first], this->ids[lhs]));
+  this->callback(std::make_pair(this->ids[op2.first], this->ids[lhs]));
 }
 
 template<typename F1>
@@ -159,7 +160,7 @@ void Reader<F1>::update( const std::string& lhs,
 {
   if( ! this->ids.contains(lhs) ) this->ids[lhs] = this->base++;
   if( ! this->ids.contains(rhs.first) ) this->ids[rhs.first] = this->base++;
-  this->callback(this->ids[rhs.first], this->ids[lhs]);
+  this->callback(std::make_pair(this->ids[rhs.first], this->ids[lhs]));
 }
 
 } // namespace taygete::graph::reader

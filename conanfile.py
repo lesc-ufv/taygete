@@ -12,7 +12,9 @@ class TaygeteConan(ConanFile):
   topics = ("C++", "STL", "Template","Data Structures", "Generic")
   generators = "cmake"
   requires = "range-v3/0.10.0@ericniebler/stable", \
-             "lorina/0.2@epfl/testing"
+             "functionalplus/v0.2.8-p0@ruanformigoni/stable", \
+             "lorina/0.2@epfl/testing", \
+             "catch2/2.5.0@bincrafters/stable"
   exports_sources = "include/*", "cmake/*", "LICENSE", "CMakeLists.txt"
   no_copy_source = True
 

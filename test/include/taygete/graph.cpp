@@ -4,17 +4,55 @@
 // @author      : Ruan E. Formigoni (ruanformigoni@gmail.com)
 // @file        : graph
 // @created     : Saturday Aug 17, 2019 20:45:20 -03
-// @license     : MIT
 // @description : Taygete - C++ Generic Data-Structures Collection
 //
+// BSD 2-Clause License
 
+// Copyright (c) 2020, Ruan Evangelista Formigoni
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+
+// * Redistributions of source code must retain the above copyright notice, this
+//   list of conditions and the following disclaimer.
+
+// * Redistributions in binary form must reproduce the above copyright notice,
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+#include <utility>
 #include <array>
 #include <catch2/catch.hpp>
-#include <taygete/graph.hpp>
-#include <taygete/graph/example.hpp>
+#include <taygete/graph/graph.hpp>
+#include <range/v3/all.hpp>
 
 namespace taygete::graph::test
 {
+
+//
+// Aliases
+//
+
+template <typename T1, typename T2>
+using link = typename std::pair<T1,T2>;
+namespace ra = ranges::actions;
+
+//
+// Helpers
+//
 
 template<typename T>
 void check_values(T&& t)
@@ -24,7 +62,7 @@ void check_values(T&& t)
 
   for( auto i : { 0,1,2 } )
   {
-    auto neighbors { t.get_adjacent(i) };
+    auto neighbors { t.neighbors(i) };
 
     std::for_each(neighbors.cbegin(), neighbors.cend(),
       [&index](auto const& adj){
@@ -33,6 +71,10 @@ void check_values(T&& t)
     );
   }
 }
+
+//
+// Tests
+//
 
 TEST_CASE("Graph data structure", "[graph]")
 {
@@ -56,109 +98,69 @@ TEST_CASE("Graph data structure", "[graph]")
     Graph<int32_t> graph6{std::move(graph2)}; // Move
   }
 
-  SECTION("get_predecessors method")
+  Graph<int32_t> g
   {
-    auto& checker {example::parity_checker};
+    {1,5},{1,4},{2,5},{2,4},{3,5},{3,6},
+    {4,7},{5,7},{6,8},{7,9},{8,9},{9,10},
+  };
 
-    auto pred{ checker.get_predecessors(0) };
-    REQUIRE( pred.empty() );
-    pred = checker.get_predecessors(1);
-    REQUIRE( pred.empty() );
-    pred = checker.get_predecessors(2);
-    REQUIRE( pred.empty() );
-    pred = checker.get_predecessors(3);
-    REQUIRE( pred.empty() );
-    pred = checker.get_predecessors(4);
-    REQUIRE( pred.size() == 1 );
-    pred = checker.get_predecessors(5);
-    REQUIRE( pred.size() == 1 );
-    pred = checker.get_predecessors(6);
-    REQUIRE( pred.size() == 1 );
-    pred = checker.get_predecessors(7);
-    REQUIRE( pred.size() == 1 );
-    pred = checker.get_predecessors(8);
-    REQUIRE( pred.size() == 2 );
-    pred = checker.get_predecessors(9);
-    REQUIRE( pred.size() == 2 );
-    pred = checker.get_predecessors(10);
-    REQUIRE( pred.size() == 2 );
-    pred = checker.get_predecessors(11);
-    REQUIRE( pred.size() == 2 );
-    pred = checker.get_predecessors(12);
-    REQUIRE( pred.size() == 2 );
-    pred = checker.get_predecessors(13);
-    REQUIRE( pred.size() == 2 );
-    pred = checker.get_predecessors(14);
-    REQUIRE( pred.size() == 1 );
-    pred = checker.get_predecessors(15);
-    REQUIRE( pred.size() == 1 );
-    pred = checker.get_predecessors(16);
-    REQUIRE( pred.size() == 2 );
-    pred = checker.get_predecessors(17);
-    REQUIRE( pred.size() == 2 );
-    pred = checker.get_predecessors(18);
-    REQUIRE( pred.size() == 2 );
+  SECTION("taygete::graph::graph::successors")
+  {
+    REQUIRE((g.successors(1) | ra::sort) == std::vector<int32_t>{4,5});
+    REQUIRE((g.successors(2) | ra::sort) == std::vector<int32_t>{4,5});
+    REQUIRE((g.successors(3) | ra::sort) == std::vector<int32_t>{5,6});
+    REQUIRE((g.successors(4) | ra::sort) == std::vector<int32_t>{7});
+    REQUIRE((g.successors(5) | ra::sort) == std::vector<int32_t>{7});
+    REQUIRE((g.successors(6) | ra::sort) == std::vector<int32_t>{8});
+    REQUIRE((g.successors(7) | ra::sort) == std::vector<int32_t>{9});
+    REQUIRE((g.successors(8) | ra::sort) == std::vector<int32_t>{9});
+    REQUIRE((g.successors(9) | ra::sort) == std::vector<int32_t>{10});
+    REQUIRE((g.successors(10) | ra::sort) == std::vector<int32_t>{});
   }
 
-  SECTION("get_node_count method")
+  SECTION("taygete::graph::graph::predecessors")
   {
-    REQUIRE( example::mux_2_1.get_node_count() == 7 );
-    REQUIRE( example::gate_xor.get_node_count() == 7 );
-    REQUIRE( example::gate_xnor.get_node_count() == 8 );
-    REQUIRE( example::adder_full_1_bit.get_node_count() == 12 );
-    REQUIRE( example::parity_generator.get_node_count() == 13 );
-    REQUIRE( example::parity_checker.get_node_count() == 19 );
-    REQUIRE( example::chebyshev.get_node_count() == 19 );
+    REQUIRE((g.predecessors(1) | ra::sort) == std::vector<int32_t>{});
+    REQUIRE((g.predecessors(2) | ra::sort) == std::vector<int32_t>{});
+    REQUIRE((g.predecessors(3) | ra::sort) == std::vector<int32_t>{});
+    REQUIRE((g.predecessors(4) | ra::sort) == std::vector<int32_t>{1,2});
+    REQUIRE((g.predecessors(5) | ra::sort) == std::vector<int32_t>{1,2,3});
+    REQUIRE((g.predecessors(6) | ra::sort) == std::vector<int32_t>{3});
+    REQUIRE((g.predecessors(7) | ra::sort) == std::vector<int32_t>{4,5});
+    REQUIRE((g.predecessors(8) | ra::sort) == std::vector<int32_t>{6});
+    REQUIRE((g.predecessors(9) | ra::sort) == std::vector<int32_t>{7,8});
+    REQUIRE((g.predecessors(10) | ra::sort) == std::vector<int32_t>{9});
   }
 
-  SECTION("exists_edge method")
+  SECTION("taygete::graph::graph::neighbors")
   {
-    REQUIRE( example::mux_2_1.exists_edge(0,4) );
-    REQUIRE( example::mux_2_1.exists_edge(0,3) );
-    REQUIRE( example::mux_2_1.exists_edge(1,5) );
-    REQUIRE( example::mux_2_1.exists_edge(2,4) );
-    REQUIRE( example::mux_2_1.exists_edge(3,5) );
-    REQUIRE( example::mux_2_1.exists_edge(4,6) );
-    REQUIRE( example::mux_2_1.exists_edge(5,6) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(0,1) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(0,2) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(0,5) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(0,6) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(1,2) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(1,3) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(4,5) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(4,7) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(5,5) );
-    REQUIRE_FALSE( example::mux_2_1.exists_edge(5,7) );
+    REQUIRE((g.neighbors(1) | ra::sort) == std::vector<int32_t>{4,5});
+    REQUIRE((g.neighbors(2) | ra::sort) == std::vector<int32_t>{4,5});
+    REQUIRE((g.neighbors(3) | ra::sort) == std::vector<int32_t>{5,6});
+    REQUIRE((g.neighbors(4) | ra::sort) == std::vector<int32_t>{1,2,7});
+    REQUIRE((g.neighbors(5) | ra::sort) == std::vector<int32_t>{1,2,3,7});
+    REQUIRE((g.neighbors(6) | ra::sort) == std::vector<int32_t>{3,8});
+    REQUIRE((g.neighbors(7) | ra::sort) == std::vector<int32_t>{4,5,9});
+    REQUIRE((g.neighbors(8) | ra::sort) == std::vector<int32_t>{6,9});
+    REQUIRE((g.neighbors(9) | ra::sort) == std::vector<int32_t>{7,8,10});
   }
 
-  SECTION("emplace method")
+  SECTION("taygete::graph::graph::emplace")
   {
-    using Node = std::pair<int32_t,int32_t>;
-    using Graph = Graph<int32_t>;
+    Graph<int32_t> g;
+    g.emplace(
+      link(1,2),link(1,3),link(2,5),link(2,3)
+    );
 
-    Graph graph;
-    Node n1(1,3);
-    Node n2(2,4);
-    Node n3(2,3);
+    REQUIRE(g.adjacent(1,2));
+    REQUIRE(g.adjacent(1,3));
+    REQUIRE(g.adjacent(2,5));
+    REQUIRE(g.adjacent(2,3));
 
-    graph.emplace(std::make_pair(1,2));
-    graph.emplace(n1);
-    graph.emplace(n3);
-  }
-
-  SECTION("erase method")
-  {
-    Graph<int32_t> graph{ {0,1},{0,2},{1,3},{1,4},{2,5},{2,6} };
-
-    graph.erase_edge({2,6});
-    REQUIRE(graph.get_node_count() == 6);
-
-    graph.erase_edge({2,5});
-    REQUIRE(graph.get_node_count() == 5);
-
-    graph.erase_edge({0,2});
-    REQUIRE(graph.get_node_count() == 4);
+    REQUIRE_FALSE(g.adjacent(2,1));
+    REQUIRE_FALSE(g.adjacent(3,1));
+    REQUIRE_FALSE(g.adjacent(5,2));
+    REQUIRE_FALSE(g.adjacent(3,2));
   }
 }
 
