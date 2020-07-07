@@ -36,21 +36,21 @@ Naming conventions are derived from the book:
 
 > Jonathan L. Gross, Jay Yellen, and Ping Zhang. 2013. Handbook of Graph Theory, Second Edition (2nd. ed.). Chapman & Hall/CRC.
 
-* A graph is denoted as $G(V,E)$.
+* A graph is denoted as $`G(V,E)`$.
 
-* $V$ are the _vertices_.
+* $`V`$ are the _vertices_.
 
-* $E$ are the edges.
+* $`E`$ are the edges.
 
-* $Endpoints$ are/is the extrema(s) of the edges.
+* $`Endpoints`$ are/is the extrema(s) of the edges.
 
-* Vertices that share an edge are $Adjacent$.
+* Vertices that share an edge are $`Adjacent`$
 
-* Adjacent vertices are called $Neighbors$.
+* Adjacent vertices are called $`Neighbors`$.
 
-* A $Proper\ Edge$ is an edge that binds two vertices.
+* A $`Proper\ Edge`$ is an edge that binds Two vertices.
 
-* A $Multi-Edge$ is a collection of two or more edges with the same endpoints, e.g.:
+* A $`Multi-Edge`$ is a collection of two or more edges with the same endpoints, e.g.:
 
   ```mermaid
   graph LR;
@@ -66,32 +66,15 @@ Naming conventions are derived from the book:
   	A-- b -->B
   ```
 
-* $Simple\ Adjacency$ between two vertices, occurs when they share exactly one edge.
+* $`Simple\ Adjacency`$ between two vertices, occurs when they share exactly one edge.
 
-* $Edge-Multiplicity$ of two vertices,  is the number of edges shared by them.
+* $`Edge-Multiplicity`$ of two vertices,  is the number of edges shared by them.
 
-* A $Self-Loop$ is an edge that has the same vertex as endpoints.
+* A $`Self-Loop`$ is an edge that has the same vertex as endpoints.
 
   ```mermaid
   graph TD;
   	A---A;
   ```
 
-* A directed edge has a $tail$ and a $head$, the $head$ is the arrowhead.
-
-```mermaid
-graph TD;
-	1 --> 5;
-	1 --> 4;
-	2 --> 5;
-	2 --> 4;
-	3 --> 5;
-	3 --> 6;
-	4 --> 7;
-	5 --> 7;
-	6 --> 8;
-	7 --> 9;
-	8 --> 9;
-	9 --> 10;
-```
-
+* A directed edge has a $`tail$` and a $`head$`, the $`head$` is the arrowhead.
