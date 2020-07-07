@@ -32,17 +32,16 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if(NOT Catch2_FOUND)
-  find_package(Catch2 REQUIRED)
-endif()
-
 if(NOT FunctionalPlus_FOUND)
   find_package(FunctionalPlus REQUIRED)
 endif()
 
-if( ${PROJECT_NAME}_tests )
-  add_executable(${PROJECT_NAME}_tests tests.cpp)
-  target_compile_options(${PROJECT_NAME}_tests
+#
+# Test Generator
+#
+function(add_test target)
+  add_executable(${target} ${ARGN})
+  target_compile_options(${target}
     PRIVATE
       -std=c++2a
       # -Wall
@@ -52,6 +51,12 @@ if( ${PROJECT_NAME}_tests )
       # -Wshadow
       # -fconcepts-diagnostics-depth=2
       # -Weffc++
+    )
+  target_link_libraries(${target}
+    PRIVATE
+      taygete
+      FunctionalPlus::fplus
   )
-  target_link_libraries(${PROJECT_NAME}_tests taygete FunctionalPlus::fplus Catch2::Catch2)
-endif()
+endfunction(add_test)
+
+add_test(test_graph "include/taygete/graph.cpp")

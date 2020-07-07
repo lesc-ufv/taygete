@@ -14,7 +14,7 @@ class TaygeteConan(ConanFile):
   requires = "range-v3/0.10.0@ericniebler/stable", \
              "functionalplus/v0.2.8-p0@ruanformigoni/stable", \
              "lorina/0.2@epfl/testing", \
-             "catch2/2.5.0@bincrafters/stable"
+             "doctest/2.4.0"
   exports_sources = "include/*", "cmake/*", "LICENSE", "CMakeLists.txt"
   no_copy_source = True
 

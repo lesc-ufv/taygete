@@ -52,6 +52,7 @@ namespace taygete::graph
 //
 
 namespace rg = ranges;
+namespace rv = ranges::views;
 namespace ra = ranges::actions;
 namespace fp = fplus;
 
@@ -202,13 +203,26 @@ template<typename T>
 template<typename U>
 void Graph<T>::erase(U&& u) noexcept
 {
-  bool search {fp::map_keep_values(u.second,fp::map_keep(u.first,*g)).empty()};
+  auto rng{this->g->equal_range(u.first)};
 
-  if( search )
+  for (auto it{rng.first}; it != rng.second; ++it)
   {
-    this->g->erase(std::forward<U>(u));
-    this->gr->erase(std::forward<U>(u));
-  }
-}
+    if( u.second == it->second )
+    {
+      this->g->erase(it);
+      break;
+    }
+  } // for: it != rng.second
+
+  auto rngr {this->gr->equal_range(u.first)};
+  for (auto it{rngr.first}; it != rngr.second; ++it)
+  {
+    if( u.second == it->second )
+    {
+      this->gr->erase(it);
+      break;
+    }
+  } // for: it != rngr.second
+} // function: erase
 
 } // namespace taygete::graph
