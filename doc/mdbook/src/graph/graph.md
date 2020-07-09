@@ -5,13 +5,48 @@
 ## Interface
 
 ```cpp
-template<typename T>
+template<Arithmetic T> requires Referenceable<T>
 class Graph;
 ```
 
 ## Constraints
 
-<!-- TODO -->
+The given can be a [fundamental type](https://en.cppreference.com/w/cpp/language/types)
+or an arbitrary type which adhere to the `arithmetic` and reference `constraints`.
+```cpp
+template<typename T>
+using Reference = T&;
+
+template<typename T>
+using ConstReference = T const&;
+
+template<typename T>
+concept Referenceable =
+  requires
+  {
+    typename Reference<T>;
+    typename ConstReference<T>;
+  };
+
+template<typename T>
+concept Integral = std::is_integral_v<T>;
+
+template<typename T>
+concept Floating = std::is_floating_point_v<T>;
+
+template<typename T>
+concept Arithmetic =
+  Integral<T>
+  || Floating<T>
+  || requires(T t)
+    {
+      { t+t } -> std::same_as<T>;
+      { t-t } -> std::same_as<T>;
+      { t*t } -> std::same_as<T>;
+      { t/t } -> std::same_as<T>;
+    };
+```
+
 
 ## Constructors
 Creates an empty graph.
