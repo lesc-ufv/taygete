@@ -41,6 +41,8 @@
 #include <memory>
 #include <functional>
 #include <set>
+#include <type_traits>
+#include <concepts>
 #include <range/v3/all.hpp>
 #include <fplus/fplus.hpp>
 
@@ -62,10 +64,46 @@ template<typename T>
 using Storage = std::unique_ptr<Vertices<T>>;
 
 //
+// Concepts
+//
+template<typename T>
+using Reference = T&;
+
+template<typename T>
+using ConstReference = T const&;
+
+template<typename T>
+concept Referenceable =
+  requires
+  {
+    typename Reference<T>;
+    typename ConstReference<T>;
+  };
+
+template<typename T>
+concept Integral = std::is_integral_v<T>;
+
+template<typename T>
+concept Floating = std::is_floating_point_v<T>;
+
+template<typename T>
+concept Arithmetic =
+  Integral<T>
+  || Floating<T>
+  || requires(T t)
+    {
+      { t+t } -> std::same_as<T>;
+      { t-t } -> std::same_as<T>;
+      { t*t } -> std::same_as<T>;
+      { t/t } -> std::same_as<T>;
+    };
+
+
+//
 // Data Structure
 //
 
-template<typename T>
+template<Arithmetic T> requires Referenceable<T>
 class Graph
 {
   private:
