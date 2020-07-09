@@ -40,6 +40,8 @@ graph:
 
 pages:
   stage: doc
+  before_script:
+    - ''
   image: "rustlang/rust:nightly"
   script:
     - cargo install mdbook mdbook-mermaid mdbook-toc --no-default-features
