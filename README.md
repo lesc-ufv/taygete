@@ -1,6 +1,14 @@
 # Taygete - C++ 20 Data Structures
 
+<img align="center" width="200px" src="./doc/character/taygete.png">
+
+---
+
 [[_TOC_]]
+
+## Documentation
+
+The documentation of this library was made with [mdbook](https://rust-lang.github.io/mdBook/) and is available in this [link](https://formigoni.gitlab.io/taygete).
 
 ## Conventions
 
@@ -17,7 +25,7 @@ Taygete adheres to C++ container conventions, that includes naming and data memb
 | and so on... |
 
 ### Methods
-| Member Functions CLASSES    |
+| Member Functions Classes    |
 | -------------------------------------- |
 |  Element access                     |
 | Iterators                                  |
@@ -78,3 +86,35 @@ Naming conventions are derived from the book:
   ```
 
 * A directed edge has a $`tail`$ and a $`head`$, the $`head`$ is the arrowhead.
+
+## Examples
+
+### Graph
+
+```cpp
+#include <taygete/graph/graph.hpp>
+
+int main(int argc, char const* argv[])
+{
+    // Initializer list constructor
+    Graph<int32_t> g
+    {
+        {1,5},{1,4},{2,5},{2,4},{3,5},{3,6},
+        {4,7},{5,7},{6,8},{7,9},{8,9},{9,10},
+    };
+    // Get vertices count
+    std::cout << "VC: " << g.vertex_count() << std::endl;
+    // Get edges count
+    std::cout << "EC: " << g.vertex_count() << std::endl;
+  return EXIT_SUCCESS;
+} // main
+```
+
+
+
+## Bugs?
+
+<img align="right" width="200px" src="./doc/character/taygete-shocked.png"> Issues are most welcome! You can open one for bugs, feature requests, new data structures!
+
+Before the submission of pull requests, please follow the [Anubis](https://formigoni.gitlab.io/anubis/) C++ coding style guidelines.
+
