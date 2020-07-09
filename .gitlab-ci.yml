@@ -1,0 +1,14 @@
+stages:
+  - doc
+
+pages:
+  stage: doc
+  image: "rustlang/rust:nightly"
+  script:
+    - cargo install mdbook mdbook-mermaid mdbook-toc --no-default-features
+    - cd ./doc/mdbook/
+    - mdbook build
+    - mv book ../../public
+  artifacts:
+    paths:
+      - public

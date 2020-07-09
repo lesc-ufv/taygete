@@ -1,0 +1,19 @@
+[preprocessor]
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+[preprocessor.toc]
+command = "mdbook-toc"
+renderer = ["html"]
+
+[book]
+authors = ["Ruan E. Formigoni"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Taygete - C++ 20 Data Structures"
+
+[output.html]
+default-theme = "navy"
+mathjax-support = true
+additional-css = ["mermaid.css"]
+additional-js = ["mermaid.min.js", "mermaid-init.js"]
