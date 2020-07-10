@@ -1,4 +1,4 @@
-// vim: set ts=2 sw=2 tw=0 et :
+// vim: set expandtab fdm=marker ts=2 sw=2 tw=100 et :
 //
 // @company     : Universidade Federal de Viçosa - Florestal
 // @author      : Ruan E. Formigoni (ruanformigoni@gmail.com)
@@ -41,22 +41,21 @@
 #include <range/v3/all.hpp>
 #include <fplus/fplus.hpp>
 
+// namespace taygete::graph::test {{{
 namespace taygete::graph::test
 {
 
-//
-// Aliases
-//
-
-template <typename T1, typename T2>
-using edge = typename std::pair<T1,T2>;
+// Namespaces {{{
 namespace ra = ranges::actions;
 namespace fp = fplus;
+// }}}
 
-//
-// Helpers
-//
+// Aliases {{{
+template <typename T1, typename T2>
+using edge = typename std::pair<T1,T2>;
+// }}}
 
+// Helpers {{{
 template<typename T>
 void check_values(T&& t)
 {
@@ -75,22 +74,29 @@ void check_values(T&& t)
   }
 }
 
-//
-// Tests
-//
+auto require = []<typename T>(T&& t){ REQUIRE(std::forward<T>(t)); };
 
+auto require_false = []<typename T>(T&& t){ REQUIRE_FALSE(std::forward<T>(t)); };
+
+auto fold_requires = []<typename... T>(T&&... t)
+{
+  (require(std::forward<T>(t)), ...);
+}; // lambda: fold_requires
+
+// }}}
+
+// Tests {{{
 TEST_CASE("taygete::graph::graph")
 {
-  auto require = []<typename T>(T&& t){ REQUIRE(std::forward<T>(t)); };
-  auto require_false = []<typename T>(T&& t){ REQUIRE_FALSE(std::forward<T>(t)); };
-
-  auto fold_requires = [&]<typename... T>(T&&... t)
-  {
-    (require(std::forward<T>(t)), ...);
-  }; // lambda: fold_requires
-
   using namespace taygete::graph;
 
+  Graph<int32_t> g
+  {
+    {1,5},{1,4},{2,5},{2,4},{3,5},{3,6},
+    {4,7},{5,7},{6,8},{7,9},{8,9},{9,10},
+  };
+
+//  taygete::graph::graph::constructors {{{
   SUBCASE("taygete::graph::graph::constructors")
   {
     using p = std::pair<int32_t,int32_t>;
@@ -107,14 +113,9 @@ TEST_CASE("taygete::graph::graph")
     // Copy and Move constructors
     Graph<int32_t> graph5{graph1};            // Copy
     Graph<int32_t> graph6{std::move(graph2)}; // Move
-  } // SUBCASE: "taygete::graph::graph::constructors"
+  } // SUBCASE: "taygete::graph::graph::constructors" }}}
 
-  Graph<int32_t> g
-  {
-    {1,5},{1,4},{2,5},{2,4},{3,5},{3,6},
-    {4,7},{5,7},{6,8},{7,9},{8,9},{9,10},
-  };
-
+// taygete::graph::graph::successors {{{
   SUBCASE("taygete::graph::graph::successors")
   {
     REQUIRE((g.successors(1) | ra::sort) == std::vector<int32_t>{4,5});
@@ -127,8 +128,9 @@ TEST_CASE("taygete::graph::graph")
     REQUIRE((g.successors(8) | ra::sort) == std::vector<int32_t>{9});
     REQUIRE((g.successors(9) | ra::sort) == std::vector<int32_t>{10});
     REQUIRE((g.successors(10) | ra::sort) == std::vector<int32_t>{});
-  } // SUBCASE: "taygete::graph::graph::successors"
+  } // SUBCASE: "taygete::graph::graph::successors" }}}
 
+// taygete::graph::graph::predecessors {{{
   SUBCASE("taygete::graph::graph::predecessors")
   {
     REQUIRE((g.predecessors(1) | ra::sort) == std::vector<int32_t>{});
@@ -141,8 +143,9 @@ TEST_CASE("taygete::graph::graph")
     REQUIRE((g.predecessors(8) | ra::sort) == std::vector<int32_t>{6});
     REQUIRE((g.predecessors(9) | ra::sort) == std::vector<int32_t>{7,8});
     REQUIRE((g.predecessors(10) | ra::sort) == std::vector<int32_t>{9});
-  } // SUBCASE: "taygete::graph::graph::predecessors"
+  } // SUBCASE: "taygete::graph::graph::predecessors" }}}
 
+// taygete::graph::graph::neighbors {{{
   SUBCASE("taygete::graph::graph::neighbors")
   {
     REQUIRE((g.neighbors(1) | ra::sort) == std::vector<int32_t>{4,5});
@@ -154,8 +157,9 @@ TEST_CASE("taygete::graph::graph")
     REQUIRE((g.neighbors(7) | ra::sort) == std::vector<int32_t>{4,5,9});
     REQUIRE((g.neighbors(8) | ra::sort) == std::vector<int32_t>{6,9});
     REQUIRE((g.neighbors(9) | ra::sort) == std::vector<int32_t>{7,8,10});
-  } // SUBCASE: "taygete::graph::graph::neighbors"
+  } // SUBCASE: "taygete::graph::graph::neighbors" }}}
 
+// taygete::graph::graph::adjacent {{{
   SUBCASE("taygete::graph::graph::adjacent")
   {
     fold_requires(
@@ -163,18 +167,21 @@ TEST_CASE("taygete::graph::graph")
       g.adjacent(3,5), g.adjacent(3,6), g.adjacent(4,7), g.adjacent(5,7),
       g.adjacent(6,8), g.adjacent(7,9), g.adjacent(8,9), g.adjacent(9,10)
     );
-  } // SUBCASE: "taygete::graph::graph::adjacent"
+  } // SUBCASE: "taygete::graph::graph::adjacent" }}}
 
+// taygete::graph::graph::vertices_count {{{
   SUBCASE("taygete::graph::graph::vertices_count")
   {
     REQUIRE(g.vertices_count() == 10);
-  } // SUBCASE: "taygete::graph::graph::vertices_count"
+  } // SUBCASE: "taygete::graph::graph::vertices_count" }}}
 
+// taygete::graph::graph::edges_count {{{
   SUBCASE("taygete::graph::graph::edges_count")
   {
     REQUIRE(g.edges_count() ==  12);
-  } // SUBCASE: "taygete::graph::graph::edges_count"
+  } // SUBCASE: "taygete::graph::graph::edges_count" }}}
 
+// taygete::graph::graph::emplace {{{
   SUBCASE("taygete::graph::graph::emplace")
   {
     Graph<int32_t> g;
@@ -190,8 +197,9 @@ TEST_CASE("taygete::graph::graph")
     REQUIRE_FALSE(g.adjacent(3,1));
     REQUIRE_FALSE(g.adjacent(5,2));
     REQUIRE_FALSE(g.adjacent(3,2));
-  } // SUBCASE: "taygete::graph::graph::emplace"
+  } // SUBCASE: "taygete::graph::graph::emplace" }}}
 
+// taygete::graph::graph::erase {{{
   SUBCASE("taygete::graph::graph::erase")
   {
     auto fold_erase = [&]<typename... T>(T&&... t) -> void
@@ -210,7 +218,8 @@ TEST_CASE("taygete::graph::graph")
       g.adjacent(8,9), g.adjacent(9,10)
     );
 
-  } // SUBCASE: "taygete::graph::graph::erase"
-} // TEST_CASE: "taygete::graph::graph"
+  } // SUBCASE: "taygete::graph::graph::erase" }}}
 
-} // namespace taygete::graph::test
+} // TEST_CASE: "taygete::graph::graph" }}}
+
+} // namespace taygete::graph::test }}}
