@@ -13,7 +13,7 @@ src = "src"
 title = "Taygete - C++ 20 Data Structures"
 
 [output.html]
-default-theme = "navy"
+default-theme = "rust"
 mathjax-support = true
 additional-css = ["mermaid.css"]
 additional-js = ["mermaid.min.js", "mermaid-init.js"]

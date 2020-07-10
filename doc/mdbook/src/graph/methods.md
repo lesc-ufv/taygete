@@ -7,8 +7,9 @@
 ### Successors
 
 ```cpp
-template<typename U>
-std::vector<T> successors(U&& u) const noexcept;
+template<typename T>
+template<typename U> requires cp::ConvertibleTo<T,U>
+std::vector<T> Graph<T>::successors(U u) const noexcept;
 ```
 
 Given a graph \\(G(V,E)\\), returns all the `outgoing` directed edges of a vertex \\(v\\).
@@ -28,8 +29,9 @@ graph TD;
 ### Predecessors
 
 ```cpp
-template<typename U>
-std::vector<T> predecessors(U u) const noexcept;
+template<typename T>
+template<typename U> requires cp::ConvertibleTo<T,U>
+std::vector<T> Graph<T>::predecessors(U u) const noexcept;
 ```
 
 Given a graph \\(G(V,E)\\), returns all the `incomming` directed edges of a vertex \\(v\\).
@@ -54,8 +56,9 @@ graph TD;
 ### Adjacent
 
 ```cpp
-template<typename U>
-bool adjacent(U&& u1, U&& u2) const noexcept;
+template<typename T>
+template<typename U> requires cp::ConvertibleTo<T,U>
+bool Graph<T>::adjacent(U&& u1, U&& u2) const noexcept;
 ```
 
 A vertex \\(v\\) is adjacent to \\(u\\) if it there is an edge from \\(v\\) to \\(u\\),
@@ -82,8 +85,9 @@ graph TD;
 ### Neighbors
 
 ```cpp
-template<typename U>
-std::vector<T> neighbors(U&& u) const noexcept;
+template<typename T>
+template<typename U> requires cp::ConvertibleTo<T,U>
+std::vector<T> Graph<T>::neighbors(U&& u) const noexcept;
 ```
 
 Returns all the predecessors and successors of a vertex \\(v\\). In the example below,
@@ -137,8 +141,9 @@ Returns the number of edges of the graph.
 ### Emplace
 
 ```cpp
-template<typename... U>
-void emplace(U&&... u) noexcept;
+template<typename T>
+template<typename... U> requires cp::IsPairsOf<T,U...>
+void Graph<T>::emplace(U&&... u) noexcept;
 ```
 
 Inserts a number of edges \\(uv\\) in a graph \\(G\\). This method takes a variable number of
@@ -170,8 +175,9 @@ graph TD;
 ### Erase
 
 ```cpp
-template<typename U = std::pair<T,T>>
-void erase(U&& u) noexcept;
+template<typename T>
+template<typename U> requires cp::IsPairOf<T,U>
+void Graph<T>::erase(U&& u) noexcept;
 ```
 
 Removes edges from a graph \\(G\\) and orphan vertices, consider the graph below:

@@ -35,117 +35,91 @@
 
 #pragma once
 
-#include <algorithm>
 #include <vector>
 #include <map>
 #include <memory>
 #include <functional>
-#include <set>
 #include <type_traits>
 #include <concepts>
+#include <taygete/concepts.hpp>
 #include <range/v3/all.hpp>
 #include <fplus/fplus.hpp>
 
+// {{{ taygete::graph
 namespace taygete::graph
 {
 
-//
-// Aliases
-//
-
+// Namespaces {{{
 namespace rg = ranges;
-namespace rv = ranges::views;
 namespace ra = ranges::actions;
 namespace fp = fplus;
+namespace cp = taygete::concepts;
+// }}}
 
+// Aliases {{{
 template<typename T>
 using Vertices = std::multimap<T,T>;
 template<typename T>
 using Storage = std::unique_ptr<Vertices<T>>;
+// }}}
 
-//
-// Concepts
-//
-template<typename T>
-using Reference = T&;
+// Graph {{{
 
-template<typename T>
-using ConstReference = T const&;
-
-template<typename T>
-concept Referenceable =
-  requires
-  {
-    typename Reference<T>;
-    typename ConstReference<T>;
-  };
-
-template<typename T>
-concept Integral = std::is_integral_v<T>;
-
-template<typename T>
-concept Floating = std::is_floating_point_v<T>;
-
-template<typename T>
-concept Arithmetic =
-  Integral<T>
-  || Floating<T>
-  || requires(T t)
-    {
-      { t+t } -> std::same_as<T>;
-      { t-t } -> std::same_as<T>;
-      { t*t } -> std::same_as<T>;
-      { t/t } -> std::same_as<T>;
-    };
-
-
-//
-// Data Structure
-//
-
-template<Arithmetic T> requires Referenceable<T>
+template<cp::Arithmetic T> requires cp::Referenceable<T>
 class Graph
 {
+  // Private Members {{{
   private:
-  // Private Members
     Storage<T> g;
     Storage<T> gr;
+  // }}}
 
+  // Public Members {{{
   public:
-  // Public Members
     using value_type = T;
     using reference = T&;
     using const_reference = T const&;
+  // }}}
+
+  // Constructors {{{
   public:
-  // Constructors
     Graph() noexcept;
     Graph(Graph const& src) noexcept;
     Graph(Graph&& src) noexcept;
     Graph(std::initializer_list<std::pair<T,T>> t) noexcept;
-  // Public Methods
-    // Element Access
-    template<typename U>
-    std::vector<T> successors(U&& u) const noexcept;
-    template<typename U>
+  // }}}
+
+  // Public Methods {{{
+    // Element Access {{{
+    template<typename U> requires cp::ConvertibleTo<T,U>
+    std::vector<T> successors(U u) const noexcept;
+    template<typename U> requires cp::ConvertibleTo<T,U>
     std::vector<T> predecessors(U u) const noexcept;
-    template<typename U>
+    template<typename U> requires cp::ConvertibleTo<T,U>
     std::vector<T> neighbors(U&& u) const noexcept;
-    template<typename U>
+    template<typename U> requires cp::ConvertibleTo<T,U>
     bool adjacent(U&& u1, U&& u2) const noexcept;
     Vertices<T>& data() noexcept;
-    // Capacity
+    // }}}
+
+    // Capacity {{{
     std::size_t vertices_count() const noexcept;
     std::size_t edges_count() const noexcept;
-    // Modifiers
-    template<typename... U>
+    // }}}
+
+    // Modifiers {{{
+    template<typename... U> requires cp::IsPairsOf<T,U...>
     void emplace(U&&... u) noexcept;
-    template<typename U = std::pair<T,T>>
+    template<typename U = std::pair<T,T>> requires cp::IsPairOf<T,U>
     void erase(U&& u) noexcept;
+    // }}}
+
+  // }}}
 };
 
-//
-// Constructors
-//
+// }}}
+
+// Constructors {{{
 template<typename T>
 Graph<T>::Graph() noexcept
   : g( std::make_unique<Vertices<T>>() )
@@ -174,27 +148,27 @@ Graph<T>::Graph(std::initializer_list<std::pair<T,T>> t) noexcept
 {
   rg::for_each(t, [&](auto&& v){this->emplace(v);});
 }
+/// }}}
 
-//
-// Public Methods
-//
+// Public Methods {{{
 
+// Element Access {{{
 template<typename T>
-template<typename U>
-std::vector<T> Graph<T>::successors(U&& u) const noexcept
+template<typename U> requires cp::ConvertibleTo<T,U>
+std::vector<T> Graph<T>::successors(U u) const noexcept
 {
   return fp::get_map_values(fp::map_keep_if([&u](auto k){ return k == u; },*g));
 }
 
 template<typename T>
-template<typename U>
+template<typename U> requires cp::ConvertibleTo<T,U>
 std::vector<T> Graph<T>::predecessors(U u) const noexcept
 {
   return fp::get_map_keys(fp::map_keep_values(std::vector<U>{u},*g));
 }
 
 template<typename T>
-template<typename U>
+template<typename U> requires cp::ConvertibleTo<T,U>
 std::vector<T> Graph<T>::neighbors(U&& u) const noexcept
 {
   return
@@ -203,7 +177,7 @@ std::vector<T> Graph<T>::neighbors(U&& u) const noexcept
 }
 
 template<typename T>
-template<typename U>
+template<typename U> requires cp::ConvertibleTo<T,U>
 bool Graph<T>::adjacent(U&& u1, U&& u2) const noexcept
 {
   return
@@ -215,6 +189,9 @@ Vertices<T>& Graph<T>::data() noexcept
 {
   return *(this->g);
 }
+// }}}
+
+// Capacity {{{
 
 template<typename T>
 std::size_t Graph<T>::vertices_count() const noexcept
@@ -229,8 +206,12 @@ std::size_t Graph<T>::edges_count() const noexcept
   return g->size();
 }
 
+// }}}
+
+// Modifiers {{{
+
 template<typename T>
-template<typename... U>
+template<typename... U> requires cp::IsPairsOf<T,U...>
 void Graph<T>::emplace(U&&... u) noexcept
 {
   (this->g->emplace(std::forward<U>(u)),...);
@@ -238,7 +219,7 @@ void Graph<T>::emplace(U&&... u) noexcept
 }
 
 template<typename T>
-template<typename U>
+template<typename U> requires cp::IsPairOf<T,U>
 void Graph<T>::erase(U&& u) noexcept
 {
   auto rng{this->g->equal_range(u.first)};
@@ -263,4 +244,8 @@ void Graph<T>::erase(U&& u) noexcept
   } // for: it != rngr.second
 } // function: erase
 
-} // namespace taygete::graph
+// }}}
+
+// }}}
+
+} // namespace taygete::graph }}}
