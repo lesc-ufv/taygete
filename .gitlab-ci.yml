@@ -1,3 +1,5 @@
+#  vim: set expandtab fdm=marker ts=2 sw=2 tw=100 et :
+
 image: archlinux
 
 stages:
@@ -10,6 +12,7 @@ before_script:
   - pacman --noconfirm -S make cmake clang git python-pip
   - pip install conan
 
+# build {{{
 build:
   stage: build
   script:
@@ -33,11 +36,16 @@ build:
       - ./build/bin/test_graph
     expire_in: 1 week
 
+# }}}
+
+# {{{ Tests
 graph:
   stage: test
   script:
     - "./build/bin/test_graph -s"
+# }}}
 
+# {{{ Pages
 pages:
   stage: doc
   before_script:
@@ -51,3 +59,4 @@ pages:
   artifacts:
     paths:
       - public
+# }}}
